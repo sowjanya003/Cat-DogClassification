@@ -1,0 +1,58 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Aug  4 17:12:38 2023
+
+@author: Bhavana Sri Sowjanya
+"""
+
+#>>>>>>>>>>>>>>>>>>>>>>>>step-1:IMPORT LIBRARIES
+import warnings
+warnings.filterwarnings("ignore")
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+from keras.models import load_model
+from keras.models import model_from_json
+from tensorflow.keras.utils import img_to_array
+from tensorflow.keras.preprocessing import image
+print("hi")
+
+# Load the model architecture from a JSON file
+with open(r"C:\Users\Bhavana Sri Sowjanya\modelGG.json", 'r') as json_file:
+    loaded_model_json = json_file.read()
+
+# Load the trained model weights
+loaded_model = model_from_json(loaded_model_json)
+loaded_model.load_weights(r"C:\Users\Bhavana Sri Sowjanya\modelGG.h5")
+print("\n\n********** Model loaded from disk **********n\n")
+
+
+# Load the test image
+test_image = image.load_img(r"C:\Users\Bhavana Sri Sowjanya\Downloads\istockphoto-1400445086-1024x1024.jpg", target_size=(300, 300, 1))
+#plt.imshow(test_image)
+print("Predicting result...\n")
+test_image = np.array(test_image)
+
+# Convert the test_image to grayscale
+gray_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
+
+# Convert the grayscale image to a numpy array
+test_image = image.img_to_array(gray_image)
+
+# Add a batch dimension to the image
+test_image = np.expand_dims(test_image, axis=0)
+
+import numpy as np
+from keras.preprocessing import image
+from keras_preprocessing.image import load_img,img_to_array
+test_image=load_img(r"C:\Users\Bhavana Sri Sowjanya\OneDrive\Desktop\dogcat\validation\dogs\dog.1300.jpg",target_size=(150,150))
+test_image=img_to_array(test_image)
+test_image=np.expand_dims(test_image,axis=0)
+
+result = loaded_model.predict(test_image)
+
+
+if result[0][0]>=0.5:
+    print('dog')
+else:
+    print('cat')
